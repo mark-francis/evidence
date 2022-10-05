@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
-	"github.com/mark.francis/evidence/app"
+	"github.com/mark-francis/evidence/app"
 )
 
 func init() {
