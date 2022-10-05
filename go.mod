@@ -1,4 +1,4 @@
-module github.com/mark-francis/evidence/functions/upload
+module github.com/mark.francis/evidence
 
 go 1.18
 
