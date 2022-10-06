@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	// Blank-import the function package so the init() runs
 	"github.com/GoogleCloudPlatform/functions-framework-go/funcframework"
+	// Blank-import the function package so the init() runs
 	_ "github.com/mark.francis/evidence"
 )
 

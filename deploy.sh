@@ -1,5 +1,5 @@
 # EvidenceDownload function
-gcloud functions deploy evidence-download \                      
+gcloud functions deploy evidence-download \
 --gen2 \
 --runtime=go116 \
 --region=us-west1 \
