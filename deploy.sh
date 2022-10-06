@@ -1,19 +1,9 @@
-# EvidenceDownload function
-gcloud functions deploy evidence-download \                      
+# EvidenceService function
+gcloud functions deploy evidence-service \
 --gen2 \
 --runtime=go116 \
 --region=us-west1 \
 --source=. \
---entry-point=EvidenceDownload \
---trigger-http \
---allow-unauthenticated
-
-# EvidenceUpload function
-gcloud functions deploy evidence-upload \
---gen2 \
---runtime=go116 \
---region=us-west1 \
---source=. \
---entry-point=EvidenceUpload \
+--entry-point=EvidenceService \
 --trigger-http \
 --allow-unauthenticated

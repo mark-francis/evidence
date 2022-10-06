@@ -1,46 +1,48 @@
 package upload
 
 import (
+	"context"
 	"io"
 	"net/http"
-	"strings"
 
+	"github.com/A-SCEND/muxxer"
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
+	"github.com/gorilla/mux"
 	"github.com/mark-francis/evidence/app"
 )
 
+var srv *muxxer.Server
+
 func init() {
 	// Register an HTTP function with the Functions Framework
-	functions.HTTP("EvidenceUpload", upload)
-	functions.HTTP("EvidenceDownload", download)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	srv = muxxer.New(ctx, "evidence")
+
+	srv.AddRoutes(
+		muxxer.Get("/upload/{fileName}", upload),
+		muxxer.Get("/download/{fileName}", download),
+	)
+
+	functions.HTTP("EvidenceService", serve)
+}
+
+func serve(w http.ResponseWriter, r *http.Request) {
+	srv.ServeRequest(w, r)
 }
 
 // HTTP handler
-func upload(w http.ResponseWriter, r *http.Request) {
-	fileName := strings.Trim(r.URL.Path, "/")
+func upload(w io.Writer, r *http.Request) (interface{}, error) {
+	vars := mux.Vars(r)
 
-	msg, err := app.Upload(fileName)
-	if err != nil {
-		panic(err)
-	}
-
-	// Send an HTTP response
-	if _, err := io.WriteString(w, msg); err != nil {
-		panic(err)
-	}
+	return app.Upload(vars["fileName"])
 }
 
 // HTTP handler
-func download(w http.ResponseWriter, r *http.Request) {
-	fileName := strings.Trim(r.URL.Path, "/")
+func download(w io.Writer, r *http.Request) (interface{}, error) {
+	vars := mux.Vars(r)
 
-	msg, err := app.Download(fileName)
-	if err != nil {
-		panic(err)
-	}
-
-	// Send an HTTP response
-	if _, err := io.WriteString(w, msg); err != nil {
-		panic(err)
-	}
+	return app.Download(vars["fileName"])
 }
