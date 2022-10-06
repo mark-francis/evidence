@@ -3,6 +3,7 @@ package upload
 import (
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/mark-francis/evidence/app"
@@ -10,13 +11,30 @@ import (
 
 func init() {
 	// Register an HTTP function with the Functions Framework
-	functions.HTTP("EvidenceUpload", myHTTPFunction)
+	functions.HTTP("EvidenceUpload", upload)
+	functions.HTTP("EvidenceDownload", download)
 }
 
-// Function myHTTPFunction is an HTTP handler
-func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
-	// Your code here
-	msg, err := app.Upload("test")
+// HTTP handler
+func upload(w http.ResponseWriter, r *http.Request) {
+	fileName := strings.Trim(r.URL.Path, "/")
+
+	msg, err := app.Upload(fileName)
+	if err != nil {
+		panic(err)
+	}
+
+	// Send an HTTP response
+	if _, err := io.WriteString(w, msg); err != nil {
+		panic(err)
+	}
+}
+
+// HTTP handler
+func download(w http.ResponseWriter, r *http.Request) {
+	fileName := strings.Trim(r.URL.Path, "/")
+
+	msg, err := app.Download(fileName)
 	if err != nil {
 		panic(err)
 	}
